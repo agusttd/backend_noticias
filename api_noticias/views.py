@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import viewsets, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Articulo, Categoria, Comentario
@@ -8,11 +9,16 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 
+
+# --- Vista para el Frontend (HTML) ---
+def home_noticias(request):
+    noticias = Articulo.objects.all().order_by('-created_at') # Trae todas, las más nuevas primero
+    return render(request, 'api_noticias/index.html', {'articulos': noticias})
+
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
-    # Cualquiera puede ver, pero solo admin crea categorías (opcional)
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]    # Cualquiera puede ver, pero solo admin crea categorías 
 
 class ArticuloViewSet(viewsets.ModelViewSet):
     queryset = Articulo.objects.all()
@@ -24,8 +30,8 @@ class ArticuloViewSet(viewsets.ModelViewSet):
     
     # Configuración de Filtros y Búsqueda 
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['categoria', 'created_at'] # Filtrar por categoría y fecha
-    search_fields = ['titulo', 'contenido']        # Búsqueda por título y contenido
+    filterset_fields = ['categoria', 'created_at'] 
+    search_fields = ['titulo', 'contenido']        
     ordering_fields = ['created_at']
 
     # Método mágico para guardar automáticamente al autor
@@ -38,8 +44,7 @@ class ComentarioViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        # Asignamos autor y buscamos el artículo asociado si viene en la URL (opcional)
-        serializer.save(autor=self.request.user)
+        serializer.save(autor=self.request.user)    # Asignamos autor y buscamos el artículo asociado si viene en la URL 
 
 class RegistroUsuarioView(APIView):
     def post(self, request):
@@ -53,6 +58,5 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated] # Solo si estás logueado puedes salir
 
     def post(self, request):
-        # Borramos el token para cerrar sesión
         request.user.auth_token.delete()
-        return Response({"mensaje": "Sesión cerrada exitosamente"}, status=status.HTTP_200_OK)
+        return Response({"mensaje": "Sesión cerrada exitosamente"}, status=status.HTTP_200_OK)  # Borramos el token para cerrar sesión

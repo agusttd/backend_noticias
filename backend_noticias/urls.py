@@ -4,6 +4,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.authtoken import views as token_views
+from api_noticias.views import home_noticias
 
 # Configuración de la información de tu API
 schema_view = get_schema_view(
@@ -21,6 +22,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_noticias, name='home'),
     path('api/', include('api_noticias.urls')),
     path('auth/', include('rest_framework.urls')),
     

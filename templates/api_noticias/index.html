@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-5">
+        <h1 class="display-4">Últimas Noticias</h1>
+        <p class="lead">Entérate de todo lo que pasa en nuestra plataforma.</p>
+    </div>
+
+    {% for articulo in articulos %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-white fw-bold text-primary">
+                {{ articulo.categoria.nombre }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ articulo.titulo }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Por: {{ articulo.autor.username }}</h6>
+                <p class="card-text">{{ articulo.contenido|truncatechars:100 }}</p>
+            </div>
+            <div class="card-footer bg-white text-muted small">
+                Publicado: {{ articulo.created_at|date:"d M Y" }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">
+        No hay noticias publicadas aún. ¡Ve al Admin o Swagger para crear una!
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
