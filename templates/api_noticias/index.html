@@ -18,8 +18,17 @@
                 <h6 class="card-subtitle mb-2 text-muted">Por: {{ articulo.autor.username }}</h6>
                 <p class="card-text">{{ articulo.contenido|truncatechars:100 }}</p>
             </div>
-            <div class="card-footer bg-white text-muted small">
-                Publicado: {{ articulo.created_at|date:"d M Y" }}
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ articulo.created_at|date:"d M Y" }}</small>
+                
+                {% if user == articulo.autor %}
+                    <form action="{% url 'borrar_articulo' articulo.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Estás seguro?');">
+                            🗑️ Borrar
+                        </button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>

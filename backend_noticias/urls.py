@@ -4,7 +4,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.authtoken import views as token_views
-from api_noticias.views import home_noticias
+from api_noticias.views import home_noticias, borrar_articulo
 
 # Configuración de la información de tu API
 schema_view = get_schema_view(
@@ -33,4 +33,5 @@ urlpatterns = [
 
     # Rutas de autenticación de Django (Login/Logout)
     path('accounts/', include('django.contrib.auth.urls')),
+    path('borrar/<int:pk>/', borrar_articulo, name='borrar_articulo'),
 ]

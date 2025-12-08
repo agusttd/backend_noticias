@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import viewsets, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Articulo, Categoria, Comentario
@@ -60,3 +60,9 @@ class LogoutView(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response({"mensaje": "Sesión cerrada exitosamente"}, status=status.HTTP_200_OK)  # Borramos el token para cerrar sesión
+    
+def borrar_articulo(request, pk):
+    articulo = get_object_or_404(Articulo, pk=pk)
+    if request.user == articulo.autor:     # SEGURIDAD: Solo borra si el usuario es el dueño
+        articulo.delete()
+    return redirect('home')
