@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0 fw-bold">Iniciar Sesión</h4>
+            </div>
+            <div class="card-body p-4 bg-white">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger text-center p-2 mb-3">
+                            Usuario o contraseña incorrectos
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">Usuario:</label>
+                        <input type="text" name="username" class="form-control form-control-lg bg-light" placeholder="Tu usuario" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">Contraseña:</label>
+                        <input type="password" name="password" class="form-control form-control-lg bg-light" placeholder="••••••" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold shadow-sm">
+                        Entrar al Portal
+                    </button>
+                </form>
+            </div>
+            <div class="card-footer text-center bg-light py-3">
+                <small class="text-muted">¿No tienes cuenta? Contacta al administrador.</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
