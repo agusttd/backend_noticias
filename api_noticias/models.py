@@ -1,21 +1,24 @@
 from django.db import models
-from django.contrib.auth.models import User # Importamos el usuario nativo para manejar Autores
+from django.contrib.auth.models import User # Se imprta el usuario nativo para manejar Autores
+from django.core.exceptions import ValidationError
 
-# Modelo para las Categorías (Política, Deportes, Tecnología, etc.)
+def validar_titulo_largo(valor):
+    if len(valor) < 5:
+        raise ValidationError('El título es muy corto. Debe tener al menos 5 letras.')
+
+# Modelo para las Categorías 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return self.nombre
 
 # Modelo Principal: La Noticia/Artículo
 class Articulo(models.Model):
-    titulo = models.CharField(max_length=200) #  Búsqueda por título
+    titulo = models.CharField(max_length=200, validators=[validar_titulo_largo]) #  Búsqueda por título
     contenido = models.TextField()
-    # Relación con Usuario (Autor): Si se borra el usuario, se borran sus noticias
-    autor = models.ForeignKey(User, on_delete=models.CASCADE) 
-    # Relación con Categoría
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
+    autor = models.ForeignKey(User, on_delete=models.CASCADE)   # Relación con Usuario (Autor): Si se borra el usuario, se borran sus noticias
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)    # Relación con Categoría
     created_at = models.DateTimeField(auto_now_add=True) # Para filtrar por fecha 
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -31,3 +34,4 @@ class Comentario(models.Model):
 
     def __str__(self):
         return f"Comentario de {self.autor.username} en {self.articulo.titulo}"
+    
